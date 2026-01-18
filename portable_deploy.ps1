@@ -31,13 +31,11 @@ if (-not (Test-Path $GitExe)) {
 # 2. Config & Init (Using local git)
 Write-Host "[2/5] Initializing Repository..." -ForegroundColor Cyan
 
-# Fix SSL Cert Path (Critical for Portable Git)
-$CertPath = "$MinGitDir\mingw64\ssl\certs\ca-bundle.crt"
-if (-not (Test-Path $CertPath)) {
-    # Fallback path for some mingit versions
-    $CertPath = "$MinGitDir\usr\ssl\certs\ca-bundle.crt" 
-}
-& $GitExe config http.sslCAInfo "$CertPath"
+# 2. Config & Init (Using local git)
+Write-Host "[2/5] Initializing Repository..." -ForegroundColor Cyan
+
+# Bypass SSL (Workaround for Portable Git Cert Issues)
+& $GitExe config http.sslVerify false
 
 & $GitExe init
 & $GitExe config user.email "agrisense@bot.com"
