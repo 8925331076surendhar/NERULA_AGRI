@@ -30,6 +30,15 @@ if (-not (Test-Path $GitExe)) {
 
 # 2. Config & Init (Using local git)
 Write-Host "[2/5] Initializing Repository..." -ForegroundColor Cyan
+
+# Fix SSL Cert Path (Critical for Portable Git)
+$CertPath = "$MinGitDir\mingw64\ssl\certs\ca-bundle.crt"
+if (-not (Test-Path $CertPath)) {
+    # Fallback path for some mingit versions
+    $CertPath = "$MinGitDir\usr\ssl\certs\ca-bundle.crt" 
+}
+& $GitExe config http.sslCAInfo "$CertPath"
+
 & $GitExe init
 & $GitExe config user.email "agrisense@bot.com"
 & $GitExe config user.name "AgriSense Bot"
@@ -46,8 +55,13 @@ try { & $GitExe remote remove origin 2>$null } catch {}
 Write-Host "[4/5] Pushing to GitHub..." -ForegroundColor Cyan
 Write-Host "NOTE: A login window should appear on your screen. Please Login." -ForegroundColor Yellow
 try {
+    # Force authentication prompt
     & $GitExe push -u origin main
-    Write-Host "`n[SUCCESS] Code successfully pushed to GitHub!" -ForegroundColor Green
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "`n[SUCCESS] Code successfully pushed to GitHub!" -ForegroundColor Green
+    } else {
+        throw "Git Push failed with exit code $LASTEXITCODE"
+    }
 } catch {
     Write-Error "Push failed. You might need to authenticate or check permissions."
     exit 1
