@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriSense - Project Presentation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/blood.min.css" id="theme">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .reveal h1,
+        .reveal h2,
+        .reveal h3 {
+            text-transform: none;
+            color: #10b981;
+            /* Agri Green */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .reveal p,
+        .reveal ul {
+            font-size: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .highlight {
+            color: #fbbf24;
+            font-weight: bold;
+        }
+
+        .slide-bg {
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 1px solid #10b981;
+        }
+
+        .icon-large {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #3b82f6;
+        }
+
+        .tech-stack-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .tech-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .tech-item i {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #10b981;
+        }
+
+        .team-grid {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        .member {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .circle-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: #333;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #666;
+            border: 3px solid #10b981;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- Slide 1: Title -->
+            <section data-background-gradient="linear-gradient(to bottom right, #051e11, #0f172a)">
+                <i class="fa-solid fa-leaf" style="font-size: 5rem; color: #10b981; margin-bottom: 20px;"></i>
+                <h1 style="font-size: 4rem;">AgriSense</h1>
+                <h3 style="color: #94a3b8;">Smart Agriculture Monitoring & Disease Detection</h3>
+                <p style="margin-top: 50px; font-size: 1.2rem; color: #cbd5e1;">Team Nerula | Agricultural Innovation
+                    Hackathon</p>
+            </section>
+
+            <!-- Slide 2: Problem Statement -->
+            <section data-transition="slide">
+                <h2>The Global Crisis</h2>
+                <div class="slide-bg">
+                    <div style="display: flex; justify-content: space-around; align-items: center;">
+                        <div style="flex: 1; text-align: left;">
+                            <ul>
+                                <li><span class="highlight" style="color: #ef4444;">30% Loss:</span> Global crop
+                                    production lost to pests/diseases annually.</li>
+                                <li><span class="highlight">Late Detection:</span> Farmers realize too late, leading to
+                                    heavy chemical use.</li>
+                                <li><span class="highlight">Labor Gap:</span> Impossible to manually inspect 10+ acres
+                                    daily.</li>
+                            </ul>
+                        </div>
+                        <div style="flex: 1; text-align: center;">
+                            <i class="fa-solid fa-earth-americas" style="font-size: 8rem; color: #ef4444;"></i>
+                            <h3 style="color: #ef4444; margin-top:20px;">Food Security at Risk</h3>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 3: The Innovation Gap -->
+            <section>
+                <h2>Why Existing Solutions Fail</h2>
+                <table style="font-size: 1.5rem; width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="border-bottom: 3px solid white;">
+                            <th>Feature</th>
+                            <th style="color: #ef4444;">Competitors</th>
+                            <th style="color: #10b981;">AgriSense (Us)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Technology</strong></td>
+                            <td>Basic Image ML</td>
+                            <td><strong>Generative AI (Gemini)</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Scope</strong></td>
+                            <td>Single Plant Only</td>
+                            <td><strong>Drone (Field View)</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Accessibility</strong></td>
+                            <td>Text / English</td>
+                            <td><strong>Voice / Vernacular</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Slide 4: Our Solution -->
+            <section data-transition="zoom">
+                <h2>The Solution: AgriSense</h2>
+                <div class="slide-bg" style="text-align: center;">
+                    <i class="fa-brands fa-google" style="font-size: 4rem; color: #fbbf24; margin-bottom: 1rem;"></i>
+                    <h3 style="color: #10b981;">Powered by Gemini Pro Vision</h3>
+                    <p style="font-size: 1.8rem; margin: 30px 0;">
+                        "We don't just <em>detect</em>. We <span class="highlight">Reason</span>, <span
+                            class="highlight">Explain</span>, and <span class="highlight">Solve</span>."
+                    </p>
+                    <div style="margin-top: 2rem; display: flex; justify-content: center; gap: 40px;">
+                        <div class="fragment fade-up icon-large">
+                            <i class="fa-solid fa-drone"></i>
+                            <p style="font-size: 1rem; margin-top: 10px;">Autonomous Patrol</p>
+                        </div>
+                        <div class="fragment fade-up icon-large">
+                            <i class="fa-solid fa-brain"></i>
+                            <p style="font-size: 1rem; margin-top: 10px;">Visual Intelligence</p>
+                        </div>
+                        <div class="fragment fade-up icon-large">
+                            <i class="fa-solid fa-language"></i>
+                            <p style="font-size: 1rem; margin-top: 10px;">Hyper-Local</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 5: How It Works -->
+            <section>
+                <h2>How It Works</h2>
+                <div style="display: flex; align-items: center; justify-content: center; margin-top: 2rem;">
+                    <!-- Step 1 -->
+                    <div style="text-align: center;">
+                        <div
+                            style="background: #10b981; color: black; width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 10px;">
+                            1</div>
+                        <p>Drone Scan /<br>Upload Image</p>
+                    </div>
+                    <i class="fa-solid fa-arrow-right" style="font-size: 2rem; margin: 0 20px; color: #666;"></i>
+
+                    <!-- Step 2 -->
+                    <div style="text-align: center;">
+                        <div
+                            style="background: #3b82f6; color: white; width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 10px;">
+                            2</div>
+                        <p>Comparison<br> & Analysis</p>
+                    </div>
+                    <i class="fa-solid fa-arrow-right" style="font-size: 2rem; margin: 0 20px; color: #666;"></i>
+
+                    <!-- Step 3 -->
+                    <div style="text-align: center;">
+                        <div
+                            style="background: #8b5cf6; color: white; width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 10px;">
+                            3</div>
+                        <p>Gemini AI<br>Verification</p>
+                    </div>
+                    <i class="fa-solid fa-arrow-right" style="font-size: 2rem; margin: 0 20px; color: #666;"></i>
+
+                    <!-- Step 4 -->
+                    <div style="text-align: center;">
+                        <div
+                            style="background: #fbbf24; color: black; width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 10px;">
+                            4</div>
+                        <p>Actionable<br>Advice</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 6: Tech Stack -->
+            <section>
+                <h2>Technology Stack</h2>
+                <div class="tech-stack-grid">
+                    <div class="tech-item">
+                        <i class="fa-brands fa-html5"></i>
+                        <span>HTML5 / CSS3</span>
+                        <small>Frontend Structure</small>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fa-brands fa-js"></i>
+                        <span>JavaScript (ES6+)</span>
+                        <small>Core Logic</small>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fa-brands fa-google"></i>
+                        <span>Gemini Pro API</span>
+                        <small>AI Diagnostics</small>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fa-solid fa-map-location-dot"></i>
+                        <span>Leaflet JS</span>
+                        <small>Satellite Mapping</small>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fa-brands fa-font-awesome"></i>
+                        <span>FontAwesome</span>
+                        <small>UI Icons</small>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fa-brands fa-github"></i>
+                        <span>GitHub Pages</span>
+                        <small>Deployment</small>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 7: Key Features -->
+            <section>
+                <h2>Key Features</h2>
+                <div
+                    style="text-align: left; display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem;">
+                    <div>
+                        <p><i class="fa-solid fa-check-circle" style="color: #10b981;"></i> <strong>Live Drone
+                                Feed</strong><br><small>Simulated webcam integration for field monitoring.</small></p>
+                        <p><i class="fa-solid fa-check-circle" style="color: #10b981;"></i> <strong>Voice
+                                Assistant</strong><br><small>Voice commands for hands-free operation.</small></p>
+                    </div>
+                    <div>
+                        <p><i class="fa-solid fa-check-circle" style="color: #10b981;"></i>
+                            <strong>Multi-Language</strong><br><small>Supports Tamil, Hindi, Telugu for
+                                accessibility.</small>
+                        </p>
+                        <p><i class="fa-solid fa-check-circle" style="color: #10b981;"></i> <strong>Offline
+                                Ready</strong><br><small>Works with low connectivity using LocalStorage.</small></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 8: Use Case Demo -->
+            <section>
+                <h2>Real World Use Case</h2>
+                <div class="slide-bg">
+                    <h3>Scenario: "Field Sector A-1 Alert"</h3>
+                    <ol>
+                        <li class="fragment">System alerts "Red Rot" detected in Sector A-1.</li>
+                        <li class="fragment">Farmer opens dashboard, views Drone Image.</li>
+                        <li class="fragment">AI confirms 94% confidence, suggests "Bordeaux Mixture".</li>
+                        <li class="fragment">Farmer orders supplies via "Direct Trade" tab.</li>
+                    </ol>
+                    <div class="fragment"
+                        style="margin-top: 20px; border-top: 1px solid #555; padding-top: 10px; font-style: italic; color: #fbbf24;">
+                        Result: Disease contained in 24 hours.
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 9: Business & Scalability -->
+            <section>
+                <h2>Business & Scalability</h2>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                    <!-- Social Impact -->
+                    <div style="background: rgba(16, 185, 129, 0.1); padding: 1rem; border-radius: 8px;">
+                        <h3><i class="fa-solid fa-users"></i> Social Impact</h3>
+                        <ul style="font-size: 1.2rem;">
+                            <li>Reduce chemical runoff by 40% (Targeted spraying).</li>
+                            <li>Increase Small Farmer income by prevention.</li>
+                            <li>Democratizing AI for the non-literate.</li>
+                        </ul>
+                    </div>
+                    <!-- Revenue Model -->
+                    <div style="background: rgba(59, 130, 246, 0.1); padding: 1rem; border-radius: 8px;">
+                        <h3><i class="fa-solid fa-coins"></i> Revenue Model</h3>
+                        <ul style="font-size: 1.2rem;">
+                            <li><strong>Premium:</strong> SaaS for Corporate Farms.</li>
+                            <li><strong>Data:</strong> Crop health analytics for insurers.</li>
+                            <li><strong>Marketplace:</strong> Commission on organic sales.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 10: Team -->
+            <section>
+                <h2>Team Nerula</h2>
+                <div class="team-grid">
+                    <div class="member">
+                        <div class="circle-img"><i class="fa-solid fa-user"></i></div>
+                        <h3>Surendhar</h3>
+                        <p style="font-size: 1rem; color: #aaa;">Full Stack Lead</p>
+                    </div>
+                    <!-- Add more members here if known -->
+                    <div class="member">
+                        <div class="circle-img"><i class="fa-solid fa-code"></i></div>
+                        <h3>Team Member</h3>
+                        <p style="font-size: 1rem; color: #aaa;">AI Specialist</p>
+                    </div>
+                </div>
+                <h1 style="margin-top: 3rem;">Thank You!</h1>
+                <p><small>https://github.com/8925331076surendhar/agrisense</small></p>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script>
+        Reveal.initialize({
+            controls: true,
+            progress: true,
+            center: true,
+            hash: true,
+            transition: 'convex', // none/fade/slide/convex/concave/zoom
+            autoPlayMedia: true
+        });
+    </script>
+</body>
+
+</html>
