@@ -1,0 +1,1132 @@
+/* Global Variables & Reset */
+:root {
+    /* Color Palette - Premium Dark & Emerald */
+    --bg-dark: #0f172a;
+    --bg-panel: #1e293b;
+    --bg-input: #334155;
+
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-accent: #34d399;
+    /* Emerald 400 */
+
+    --primary: #10b981;
+    /* Emerald 500 */
+    --primary-glow: rgba(16, 185, 129, 0.3);
+
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --success: #10b981;
+
+    --border: #334155;
+
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --glow: 0 0 15px var(--primary-glow);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Outfit', sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    line-height: 1.5;
+    overflow: hidden;
+    /* App-like feel */
+}
+
+/* Layout */
+.app-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 260px;
+    background-color: var(--bg-panel);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    flex-shrink: 0;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 3rem;
+    text-shadow: var(--glow);
+}
+
+.sidebar-team-logo {
+    height: 32px;
+    width: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--primary);
+    box-shadow: 0 0 10px var(--primary-glow);
+    margin-left: auto;
+    /* Push to right slightly if flex gap allows, or just let gap handle it */
+}
+
+.nav-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.nav-item:hover,
+.nav-item.active {
+    background-color: var(--primary-glow);
+    color: var(--text-primary);
+    border-left: 3px solid var(--primary);
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    background-color: var(--bg-input);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: var(--text-accent);
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+}
+
+.info .name {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.info .status {
+    font-size: 0.75rem;
+    color: var(--success);
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem 2rem;
+    overflow-y: auto;
+}
+
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    position: relative;
+    /* For absolute centering */
+}
+
+.center-brand {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 15px;
+    padding: 8px 25px;
+
+    /* Premium Glassmorphism */
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    /* Cyan tint border */
+    border-radius: 50px;
+    /* Pill shape */
+    box-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.4),
+        0 0 15px rgba(56, 189, 248, 0.2);
+    /* Cyan glow */
+
+    /* Text Styling */
+    color: #e0f2fe;
+    /* Light cyan-white */
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 1.1rem;
+    white-space: nowrap;
+
+    /* Animation */
+    transition: all 0.3s ease;
+}
+
+.center-brand:hover {
+    border-color: rgba(56, 189, 248, 0.5);
+    box-shadow:
+        0 4px 25px rgba(0, 0, 0, 0.5),
+        0 0 25px rgba(56, 189, 248, 0.4);
+    transform: translateX(-50%) translateY(-2px);
+}
+
+.center-brand img {
+    height: 42px;
+    width: 42px;
+    border-radius: 50%;
+    margin-bottom: 0;
+
+    /* Logo specific glow */
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+    border: 2px solid rgba(56, 189, 248, 0.3);
+}
+
+.page-title h1 {
+    font-size: 1.75rem;
+    font-weight: 600;
+}
+
+.page-title .subtitle {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.system-status {
+    display: flex;
+    gap: 1.5rem;
+    background: var(--bg-panel);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.status-item .label {
+    color: var(--text-secondary);
+}
+
+.status-item .value {
+    font-weight: 600;
+}
+
+.status-item .value.success {
+    color: var(--success);
+}
+
+.status-item .value.warning {
+    color: var(--warning);
+}
+
+/* Grid System to Columns */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    /* 2/3 Left, 1/3 Right */
+    gap: 1.5rem;
+    height: 100%;
+    min-height: 600px;
+}
+
+/* Independent Columns */
+.dashboard-left,
+.dashboard-right {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    height: 100%;
+}
+
+/* LEFT COLUMN SIZING */
+.drone-feeds {
+    /* Large fixed height for Drone Feeds per reference */
+    flex: 0 0 450px;
+    overflow: hidden;
+}
+
+.map-panel {
+    /* Map takes the rest of the left column */
+    flex: 1;
+}
+
+/* RIGHT COLUMN SIZING */
+.weather-panel {
+    /* Compact, content-based height */
+    flex: 0 0 auto;
+}
+
+.analysis-panel {
+    /* AI takes the rest of the right column */
+    flex: 1;
+    overflow: hidden;
+    /* Scroll internal */
+}
+
+/* Ensure AI Analysis Content Scrolls */
+.analysis-content {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 5px;
+    /* Space for scrollbar */
+}
+
+/* Custom Scrollbar for Analysis */
+.analysis-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.analysis-content::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 3px;
+}
+
+.analysis-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Panels */
+.panel {
+    background-color: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Specific Panels */
+.analysis-panel {
+    overflow: hidden;
+    /* Ensure flex content scrolls within */
+    position: relative;
+    box-shadow: var(--shadow);
+}
+
+/* Hidden Panels by Default */
+.reports-panel,
+.system-panel {
+    /* These usually overlay or replace; if they are direct children, ensure they default to hidden */
+    position: relative;
+    box-shadow: var(--shadow);
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.panel-header h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-accent);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-icon {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 1rem;
+    transition: color 0.2s;
+}
+
+.btn-icon:hover {
+    color: var(--text-primary);
+}
+
+/* Placeholders for specific panels (will be populated by components) */
+#camera-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 0.5rem;
+    height: 100%;
+}
+
+.cam-feed {
+    background-color: #000;
+    position: relative;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.cam-overlay {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    color: white;
+}
+
+/* Weather Panel Styles */
+.weather-grid {
+    display: flex;
+    flex-direction: row;
+    /* Horizontal layout: Temp Left, Stats Right */
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.weather-main {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    background: none;
+    /* Removed background for cleaner look */
+    padding: 0;
+}
+
+.current-temp .temp-val {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1;
+}
+
+.current-temp .weather-desc {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.weather-icon-lg {
+    font-size: 2.5rem;
+    color: var(--warning);
+}
+
+.weather-stats {
+    display: flex;
+    /* Flex instead of grid for tighter packing */
+    gap: 0.75rem;
+}
+
+.stat-item {
+    background: var(--bg-input);
+    padding: 0.5rem 0.75rem;
+    /* More compact */
+    border-radius: var(--radius-sm);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    min-width: 70px;
+    /* Consistent width */
+}
+
+.stat-item i {
+    color: var(--text-accent);
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+}
+
+.stat-info .label {
+    display: none;
+    /* Hide label to match compact view if needed, or keep small */
+}
+
+.stat-info .value {
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.farming-advice {
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    padding: 0.5rem 0.75rem;
+    /* Very slim bar */
+    border-radius: var(--radius-sm);
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.farming-advice.warning {
+    background: rgba(245, 158, 11, 0.1);
+    border-color: rgba(245, 158, 11, 0.3);
+}
+
+.advice-icon {
+    font-size: 1.2rem;
+    color: var(--primary);
+}
+
+.farming-advice.warning .advice-icon {
+    color: var(--warning);
+}
+
+.advice-content h4 {
+    display: none;
+    /* Hide title for single-line look */
+}
+
+.advice-content p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+/* AI Analysis Styles */
+.alert-card {
+    background: var(--bg-input);
+    border-left: 4px solid var(--border);
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    border-radius: 4px;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.alert-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+}
+
+.disease-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.disease-name.danger {
+    color: var(--danger);
+}
+
+.disease-name.warning {
+    color: var(--warning);
+}
+
+.disease-name.success {
+    color: var(--success);
+}
+
+.alert-time {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.severity-meter {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.severity-meter .label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    width: 50px;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 6px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-bar .fill {
+    height: 100%;
+    border-radius: 3px;
+}
+
+.progress-bar .fill.danger {
+    background: var(--danger);
+}
+
+.progress-bar .fill.warning {
+    background: var(--warning);
+}
+
+.progress-bar .fill.success {
+    background: var(--success);
+}
+
+.severity-meter .value {
+    font-size: 0.8rem;
+    font-weight: 600;
+    min-width: 40px;
+    text-align: right;
+}
+
+.treatment-box {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 0.5rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-primary);
+}
+
+.treatment-box i {
+    color: var(--primary);
+}
+
+#map-container {
+    flex: 1;
+    border-radius: var(--radius-sm);
+    background: var(--bg-input);
+    min-height: 250px;
+    z-index: 1;
+    /* Ensure map is below overlays if any */
+}
+
+/* Drone Feed Styles */
+.drone-feeds {
+    /* Height controlled by grid row */
+    overflow: hidden;
+    /* Ensure content stays strictly inside box per user request */
+}
+
+.cam-feed {
+    background-color: #000;
+    position: relative;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cam-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), transparent);
+    z-index: 10;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.cam-header {
+    display: flex;
+    flex-direction: column;
+}
+
+.cam-id {
+    font-weight: 700;
+    font-family: monospace;
+    color: var(--primary);
+}
+
+.rec-dot {
+    color: var(--danger);
+    font-size: 0.7rem;
+    animation: blink 1s infinite;
+}
+
+.cam-info {
+    text-align: right;
+    font-size: 0.75rem;
+    color: #ccc;
+    display: flex;
+    flex-direction: column;
+}
+
+.cam-placeholder {
+    color: rgba(255, 255, 255, 0.1);
+    font-size: 3rem;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.scan-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: rgba(16, 185, 129, 0.5);
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+    animation: scan 3s linear infinite;
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+@keyframes scan {
+    0% {
+        top: 0;
+    }
+
+    100% {
+        top: 100%;
+    }
+}
+
+/* Map Markers */
+.drone-marker {
+    color: var(--text-accent);
+    font-size: 1.2rem;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+/* Pulse Animation for Disease Markers */
+.pulse-animation {
+    animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+    transform-origin: center;
+}
+
+@keyframes pulse-ring {
+    0% {
+        transform: scale(0.95);
+        opacity: 0.8;
+    }
+
+    50% {
+        transform: scale(1.1);
+        opacity: 0.4;
+    }
+
+    100% {
+        transform: scale(0.95);
+        opacity: 0.8;
+    }
+}
+
+/* Map Controls */
+.map-controls {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+    display: flex;
+    gap: 0.5rem;
+    background: rgba(15, 23, 42, 0.8);
+    padding: 0.5rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    backdrop-filter: blur(4px);
+}
+
+.map-search-input {
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    width: 150px;
+    outline: none;
+}
+
+.map-search-input:focus {
+    border-color: var(--primary);
+}
+
+.btn-map-action {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.btn-map-action:hover {
+    background: #059669;
+    /* Emerald 600 */
+}
+
+.btn-map-action.secondary {
+    background: var(--bg-input);
+    color: var(--text-secondary);
+}
+
+
+/* Navigation & View Modes */
+/* Absolute Positioning Strategy for Full Views */
+.dashboard-grid.view-mode {
+    display: block;
+    position: relative;
+    /* Anchor for absolute children */
+    height: calc(100vh - 120px);
+    /* Fill remaining space */
+    width: 100%;
+    overflow: hidden;
+    /* Prevent scrolling if not needed */
+}
+
+/* Ensure columns don't interfere in view mode */
+.dashboard-grid.view-mode .dashboard-left,
+.dashboard-grid.view-mode .dashboard-right {
+    /* We don't hide them here, let app.js handle visibility or z-index will cover */
+    /* best to keep them out of flow if possible, or just covered */
+    width: 100%;
+    height: 100%;
+}
+
+.panel.full-view {
+    display: flex !important;
+    flex-direction: column;
+
+    /* OVERLAY EVERYTHING */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 50;
+    /* Above everything else */
+
+    margin: 0 !important;
+    border-radius: var(--radius-md);
+}
+
+.panel.hidden-panel {
+    display: none !important;
+}
+
+/* Enhancements for Full Views */
+.panel.full-view .camera-grid {
+    /* If Drones are full screen, make grid bigger? */
+    height: 100%;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+
+    /* Layout Reset */
+    .app-container {
+        flex-direction: column;
+    }
+
+    /* Sidebar - Mobile Drawer */
+    .sidebar {
+        position: fixed;
+        left: -280px;
+        top: 0;
+        bottom: 0;
+        width: 260px;
+        z-index: 2000;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 10px 0 25px rgba(0, 0, 0, 0.5);
+    }
+
+    .sidebar.mobile-active {
+        transform: translateX(280px);
+    }
+
+    /* Main Content */
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+        height: 100vh;
+        overflow-y: auto;
+    }
+
+    /* Header */
+    #mobile-menu-btn {
+        display: block !important;
+    }
+
+    .top-bar {
+        padding: 1rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+        height: auto;
+    }
+
+    .system-status {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    /* Stack Grid to Single Column */
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        /* Stack vertically */
+        grid-template-rows: auto;
+        padding: 0 1rem 1rem 1rem;
+        overflow-y: visible;
+        /* Scroll happens on body/main now */
+        height: auto;
+    }
+
+    /* Adjust Panel Heights for Mobile Scroll */
+    .panel {
+        min-height: 350px;
+        /* Give enough touch space */
+        max-height: none;
+        /* Let them grow */
+        overflow: visible;
+    }
+
+    .camera-grid {
+        grid-template-columns: 1fr;
+        /* 1 Camera per row on small screens */
+    }
+
+    /* Drone Feeds Mobile Tweaks */
+    .cam-feed {
+        min-height: 200px;
+    }
+
+    /* Map Controls */
+    .map-controls {
+        top: 50px;
+        /* Push down below potential overlapping headers */
+        width: 90%;
+        left: 5%;
+        right: auto;
+        flex-wrap: wrap;
+    }
+
+    .map-search-input {
+        flex: 1;
+        /* Full width input */
+        min-width: 0;
+    }
+
+    /* View Modes (Full Screen Buttons) */
+    .dashboard-grid.view-mode {
+        height: auto;
+        /* Allow growth */
+        flex: 1;
+    }
+
+    .center-brand {
+        position: static;
+        transform: none;
+        margin: 1rem 0;
+        order: -1;
+    }
+}
+
+/* Ground Control Software (GCS) */
+.gcs-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    height: 100%;
+}
+
+.gcs-hud {
+    display: flex;
+    gap: 1rem;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 0.75rem;
+    border-radius: var(--radius-sm);
+    justify-content: space-around;
+    font-family: monospace;
+    border: 1px solid var(--border);
+}
+
+.hud-item {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary);
+    text-shadow: 0 0 5px var(--primary-glow);
+}
+
+.gcs-main {
+    display: flex;
+    gap: 1rem;
+    flex: 1;
+    min-height: 0;
+}
+
+.gcs-map {
+    flex: 1;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    z-index: 1;
+}
+
+.gcs-sidebar {
+    width: 250px;
+    background: var(--bg-input);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.gcs-sidebar h3 {
+    font-size: 1rem;
+    color: var(--text-accent);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.mission-tools {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.gcs-btn {
+    flex: 1;
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    padding: 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.gcs-btn:hover {
+    background: var(--primary-glow);
+    border-color: var(--primary);
+}
+
+.gcs-btn.btn-danger {
+    color: var(--danger);
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.gcs-btn.btn-danger:hover {
+    background: rgba(239, 68, 68, 0.2);
+}
+
+.gcs-btn.btn-primary {
+    background: var(--primary);
+    color: #000;
+    font-weight: 600;
+    border: none;
+}
+
+.gcs-btn.btn-primary:hover {
+    background: #34d399;
+}
+
+.gcs-btn.btn-success {
+    background: var(--success);
+    color: #000;
+    font-weight: 600;
+    border: none;
+}
+
+.mission-list {
+    flex: 1;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    padding: 0.5rem;
+    list-style: none;
+}
+
+.mission-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.85rem;
+}
+
+.mission-item span {
+    font-weight: 600;
+    color: var(--text-accent);
+}
+
+.empty-state {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 1rem;
+    font-style: italic;
+    font-size: 0.85rem;
+}
+
+.mission-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}

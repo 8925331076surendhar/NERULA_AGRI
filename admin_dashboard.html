@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriSense | Admin Console</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #10b981;
+            --bg: #0B0E14;
+            --card: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            color: var(--text-main);
+            margin: 0;
+            padding: 2rem;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 1rem;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: color 0.3s;
+            padding: 8px;
+        }
+
+        .icon-btn:hover {
+            color: var(--primary);
+        }
+
+
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        h2 {
+            margin-top: 0;
+            color: var(--primary);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        th {
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+
+        .status-success {
+            color: #4ade80;
+        }
+
+        .status-failed {
+            color: #ef4444;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            color: white;
+            font-family: inherit;
+            margin-bottom: 8px;
+        }
+
+        button.btn-primary {
+            background: var(--primary);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            width: auto;
+        }
+
+        button.btn-danger {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        /* Inbox Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--card);
+            padding: 2rem;
+            border-radius: 12px;
+            width: 500px;
+            max-width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .msg-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            border-left: 3px solid var(--primary);
+        }
+
+        .msg-unread {
+            border-left-color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ef4444;
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div style="display:flex; align-items:center; gap:15px;">
+            <img src="assets/nerula_logo.jpg" alt="Logo"
+                style="height:50px; border-radius:8px; border:2px solid rgba(255,255,255,0.1);">
+            <div>
+                <h1 style="margin:0;">AgriSense <span style="font-weight:300; opacity:0.7;">Admin</span></h1>
+                <div style="font-size:0.9rem; color: var(--text-muted);">System Management & Logging</div>
+            </div>
+        </div>
+
+        <div style="display:flex; gap: 20px; align-items: center;">
+            <!-- SUPPORT SETTINGS ICON -->
+            <button onclick="toggleSupportSettings()" title="Support Settings"
+                style="background:none; border:none; color:var(--text-muted); font-size:1.3rem; cursor:pointer; transition:color 0.3s;">
+                <i class="fa-solid fa-headset"></i>
+            </button>
+
+            <!-- SYSTEM ACCESS ICON -->
+            <button onclick="toggleAccessControl()" title="System Usage Restrictions"
+                style="background:none; border:none; color:var(--text-muted); font-size:1.3rem; cursor:pointer; transition:color 0.3s;">
+                <i class="fa-solid fa-clock"></i>
+            </button>
+
+            <!-- INBOX ICON -->
+            <button onclick="openInbox()"
+                style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer; position:relative;">
+                <i class="fa-solid fa-envelope"></i>
+                <span id="msg-badge" class="badge">0</span>
+            </button>
+
+            <!-- EMERGENCY ALERTS ICON -->
+            <button onclick="openAlerts()"
+                style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer; position:relative;"
+                title="System Alerts">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span id="alert-badge" class="badge" style="background:orange;">0</span>
+            </button>
+
+            <button onclick="logout()"
+                style="background:none; border:none; color:#ef4444; cursor:pointer; font-size:1.1rem;">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </button>
+        </div>
+    </header>
+
+    <!-- INBOX MODAL -->
+    <div id="inbox-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+                <h2 style="margin:0;"><i class="fa-solid fa-inbox"></i> Messages</h2>
+                <button onclick="closeInbox()"
+                    style="background:none; border:none; color:#94a3b8; font-size:1.5rem; cursor:pointer;">&times;</button>
+            </div>
+            <div id="inbox-list">
+                <!-- Messages Injected Here -->
+            </div>
+            <div style="text-align:right; margin-top:1rem;">
+                <button onclick="clearAllMessages()"
+                    style="color:#ef4444; background:none; border:1px solid #ef4444; padding:5px 10px; border-radius:4px; cursor:pointer;">Delete
+                    All</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ERROR ALERTS MODAL -->
+    <div id="alerts-modal" class="modal-overlay">
+        <div class="modal-content" style="border-color: orange;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+                <h2 style="margin:0; color:orange;"><i class="fa-solid fa-triangle-exclamation"></i> System Alerts</h2>
+                <button onclick="closeAlerts()"
+                    style="background:none; border:none; color:#94a3b8; font-size:1.5rem; cursor:pointer;">&times;</button>
+            </div>
+            <div id="alerts-list">
+                <!-- Alerts Injected Here -->
+            </div>
+            <div style="text-align:right; margin-top:1rem;">
+                <button onclick="clearAllAlerts()"
+                    style="color:orange; background:none; border:1px solid orange; padding:5px 10px; border-radius:4px; cursor:pointer;">Dismiss
+                    All</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+        <!-- API KEY MANAGEMENT -->
+        <div class="card">
+            <h2><i class="fa-brands fa-google"></i> Master API Key Control</h2>
+
+            <!-- Quota Visualizer -->
+            <div
+                style="background:rgba(0,0,0,0.2); padding:1rem; border-radius:8px; margin-bottom:1.5rem; border:1px solid rgba(255,255,255,0.05);">
+                <div style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:0.85rem;">
+                    <span style="color:var(--text-muted);">Daily Quota Usage</span>
+                    <span id="quota-text" style="color:var(--primary); font-weight:600;">...</span>
+                </div>
+                <div style="width:100%; height:8px; background:#334155; border-radius:4px; overflow:hidden;">
+                    <div id="quota-bar"
+                        style="width:0%; height:100%; background:var(--primary); transition:width 1s ease;"></div>
+                </div>
+                <div
+                    style="display:flex; justify-content:space-between; margin-top:5px; font-size:0.75rem; color:#64748b;">
+                    <span>Resets in: <strong style="color:#cbd5e1;">12h 30m</strong></span>
+                    <span id="quota-tier-info">Tier: <strong style="color:#cbd5e1;">Free (1500 Req/Day)</strong></span>
+                </div>
+            </div>
+
+            <label for="admin-gemini-key" style="display:block; margin-bottom:5px; font-size:0.85rem;">Active Gemini API
+                Key</label>
+            <input type="password" id="admin-gemini-key" placeholder="Enter valid AIzaSy... key">
+
+            <div style="display:flex; justify-content: flex-end; align-items:center; gap: 10px; margin-top: 10px;">
+                <span id="key-msg" style="margin-right:auto; font-size:0.9rem;"></span>
+                <button class="btn-primary" onclick="saveKey()">Push Key to Users</button>
+            </div>
+            <p style="font-size:0.8rem; color:var(--text-muted); margin-top:10px;">
+                <i class="fa-solid fa-circle-info"></i> This key will be auto-assigned to all non-admin users.
+            </p>
+        </div>
+
+        <!-- SUPPORT SETTINGS (Hidden by Default) -->
+        <div class="card" id="support-settings-card" style="display:none; border-color: var(--primary);">
+            <h2><i class="fa-solid fa-headset"></i> Support Settings</h2>
+            <label style="display:block; margin-bottom:5px; font-size:0.85rem; color:var(--text-muted);">Support Contact
+                Number (Visible to Users)</label>
+            <div style="display:flex; gap:10px;">
+                <input type="text" id="admin-support-contact" placeholder="+91 98765 43210"
+                    style="flex:1; padding:10px; background:var(--bg); border:1px solid #334155; color:white; border-radius:8px;">
+                <button class="btn-primary" onclick="saveSupportSettings()">Update</button>
+            </div>
+        </div>
+
+        <!-- SYSTEM ACCESS CONTROL (Hidden by Default) -->
+        <div class="card" id="access-control-card" style="display:none; border-color: var(--primary);">
+            <h2><i class="fa-solid fa-clock"></i> System Access Control</h2>
+            <!-- Time Picker Styles -->
+            <style>
+                .time-picker-group {
+                    display: flex;
+                    gap: 5px;
+                }
+
+                .time-select {
+                    padding: 10px;
+                    background: var(--bg);
+                    border: 1px solid #334155;
+                    color: white;
+                    border-radius: 8px;
+                    flex: 1;
+                }
+            </style>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem; margin-bottom:1rem;">
+                <div>
+                    <label style="display:block; margin-bottom:0.5rem; color:var(--text-muted);">Access Start Time
+                        (12h)</label>
+                    <div class="time-picker-group" id="start-picker">
+                        <select id="start-h" class="time-select">
+                            <option value="12">12</option>
+                            <option value="01">01</option>
+                            <option value="02">02</option>
+                            <option value="03">03</option>
+                            <option value="04">04</option>
+                            <option value="05">05</option>
+                            <option value="06">06</option>
+                            <option value="07">07</option>
+                            <option value="08">08</option>
+                            <option value="09">09</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                        </select>
+                        <select id="start-m" class="time-select">
+                            <option value="00">00</option>
+                            <option value="15">15</option>
+                            <option value="30">30</option>
+                            <option value="45">45</option>
+                        </select>
+                        <select id="start-ampm" class="time-select">
+                            <option value="AM">AM</option>
+                            <option value="PM">PM</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label style="display:block; margin-bottom:0.5rem; color:var(--text-muted);">Access End Time
+                        (12h)</label>
+                    <div class="time-picker-group" id="end-picker">
+                        <select id="end-h" class="time-select">
+                            <option value="12">12</option>
+                            <option value="01">01</option>
+                            <option value="02">02</option>
+                            <option value="03">03</option>
+                            <option value="04">04</option>
+                            <option value="05">05</option>
+                            <option value="06">06</option>
+                            <option value="07">07</option>
+                            <option value="08">08</option>
+                            <option value="09">09</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                        </select>
+                        <select id="end-m" class="time-select">
+                            <option value="00">00</option>
+                            <option value="15">15</option>
+                            <option value="30">30</option>
+                            <option value="45">45</option>
+                        </select>
+                        <select id="end-ampm" class="time-select">
+                            <option value="AM">AM</option>
+                            <option value="PM">PM</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-bottom:1rem;">
+                <label style="display:block; margin-bottom:0.5rem; color:var(--text-muted);">Restriction Message</label>
+                <input type="text" id="access-msg"
+                    placeholder="e.g., System is offline for night maintenance. Contact Admin."
+                    style="width:100%; padding:10px; background:var(--bg); border:1px solid #334155; color:white; border-radius:8px;">
+            </div>
+            <div style="display:flex; justify-content: space-between; align-items:center;">
+                <div style="margin-right:auto;">
+                    <span id="access-status" style="font-size:0.9rem; color:#94a3b8;">Current Status: <strong
+                            style="color:#10b981;">Open</strong></span>
+                </div>
+                <button class="btn-primary" onclick="saveAccessSettings()">Save Settings</button>
+            </div>
+        </div>
+
+
+        <!-- REGISTERED USERS -->
+        <div class="card">
+            <h2><i class="fa-solid fa-users"></i> Registered Farmers</h2>
+            <div id="user-list">
+                <!-- Populated by JS -->
+                <div style="font-style:italic; color:#64748b;">Loading...</div>
+            </div>
+            <div style="margin-top:10px; font-size:0.8rem; color:#64748b; text-align:right;">
+                <i class="fa-solid fa-info-circle"></i> Deleting a user instantly revokes login access.
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- ACTIVITY LOGS -->
+    <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h2><i class="fa-solid fa-list-ul"></i> Login Activity Logs</h2>
+            <button onclick="clearLogs()" class="btn-danger">Clear Logs</button>
+        </div>
+        <div style="overflow-x:auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>User</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Logout Time</th>
+                    </tr>
+                </thead>
+                <tbody id="log-table-body">
+                    <!-- Logs injected here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Security Check
+        const authRole = sessionStorage.getItem('agrisense_role');
+        if (authRole !== 'admin') {
+            alert("⛔ Access Denied: Admins Only");
+            window.location.replace('login.html');
+        }
+
+        // Initialize
+        loadUsers();
+        loadLogs(); // Restore missing log loader
+        loadKey();
+        loadQuota();
+        loadAccessSettings();
+        loadSupportSettings();
+
+        // --- SUPPORT SETTINGS ---
+        function saveSupportSettings() {
+            const contact = document.getElementById('admin-support-contact').value.trim();
+            if (!contact) return alert("Please enter a contact number.");
+
+            localStorage.setItem('agrisense_support_contact', contact);
+            alert("✅ Support Number Updated!");
+        }
+
+        function loadSupportSettings() {
+            const contact = localStorage.getItem('agrisense_support_contact');
+            if (contact) {
+                document.getElementById('admin-support-contact').value = contact;
+            }
+        }
+
+        // --- ACCESS CONTROL LOGIC ---
+        function saveAccessSettings() {
+            // Helper to get time string from picker
+            const getTime = (p) => {
+                let h = parseInt(document.getElementById(p + '-h').value);
+                const m = document.getElementById(p + '-m').value;
+                const ampm = document.getElementById(p + '-ampm').value;
+
+                if (ampm === 'PM' && h !== 12) h += 12;
+                if (ampm === 'AM' && h === 12) h = 0;
+
+                return `${h.toString().padStart(2, '0')}:${m}`;
+            };
+
+            const start = getTime('start');
+            const end = getTime('end');
+            const msg = document.getElementById('access-msg').value.trim();
+
+            const settings = {
+                start: start,
+                end: end,
+                message: msg || "System access is currently restricted by Administrator."
+            };
+
+            localStorage.setItem('agrisense_access_settings', JSON.stringify(settings));
+            alert("✅ Access Settings Saved!");
+            updateAccessStatusUI(settings);
+        }
+
+        function loadAccessSettings() {
+            const settings = JSON.parse(localStorage.getItem('agrisense_access_settings') || 'null');
+            if (settings) {
+                // Helper to set UI from 24h string
+                const setTime = (p, timeStr) => {
+                    let [h, m] = timeStr.split(':').map(Number);
+                    let ampm = 'AM';
+
+                    if (h >= 12) {
+                        ampm = 'PM';
+                        if (h > 12) h -= 12;
+                    }
+                    if (h === 0) h = 12;
+
+                    document.getElementById(p + '-h').value = h.toString().padStart(2, '0');
+                    // Find nearest minute option (00/15/30/45)
+                    const mVal = [0, 15, 30, 45].reduce((prev, curr) => Math.abs(curr - m) < Math.abs(prev - m) ? curr : prev);
+                    document.getElementById(p + '-m').value = mVal.toString().padStart(2, '0');
+                    document.getElementById(p + '-ampm').value = ampm;
+                };
+
+                setTime('start', settings.start);
+                setTime('end', settings.end);
+
+                document.getElementById('access-msg').value = settings.message;
+                updateAccessStatusUI(settings);
+            }
+        }
+
+        function toggleAccessControl() {
+            const card = document.getElementById('access-control-card');
+            if (card.style.display === 'none') {
+                card.style.display = 'block';
+                // Optional: Scroll to it
+                card.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                card.style.display = 'none';
+            }
+        }
+
+
+        function updateAccessStatusUI(settings) {
+            const now = new Date();
+            const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+            const [sh, sm] = settings.start.split(':').map(Number);
+            const [eh, em] = settings.end.split(':').map(Number);
+            const startMinutes = sh * 60 + sm;
+            const endMinutes = eh * 60 + em;
+
+            let isOpen = false;
+            if (startMinutes <= endMinutes) {
+                isOpen = currentMinutes >= startMinutes && currentMinutes < endMinutes;
+            } else {
+                // Overnight range (e.g. 22:00 to 06:00)
+                isOpen = currentMinutes >= startMinutes || currentMinutes < endMinutes;
+            }
+
+            const statusEl = document.getElementById('access-status');
+            if (isOpen) {
+                statusEl.innerHTML = `Current Status: <strong style="color:#10b981;">Active (Allowed)</strong>`;
+            } else {
+                statusEl.innerHTML = `Current Status: <strong style="color:#ef4444;">Restricted (Blocked)</strong>`;
+            }
+        }
+
+        function loadKey() {
+            const key = localStorage.getItem('agrisense_api_key_gemini');
+            if (key) {
+                document.getElementById('admin-gemini-key').value = key;
+            }
+        }
+        function loadQuota(targetUser = null) {
+            const today = new Date().toISOString().split('T')[0];
+            let used = 0;
+            const max = 50; // Increased Limit
+
+            if (targetUser) {
+                // Specific User Usage
+                const key = `agrisense_usage_${targetUser}_${today}`;
+                const val = localStorage.getItem(key);
+                used = parseInt(val || '0');
+                if (isNaN(used)) used = 0;
+
+                console.log(`Quota Debug: User=${targetUser}, Key=${key}, Val=${val}, Used=${used}`);
+            } else {
+                // Global Usage
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key.startsWith('agrisense_usage_') && key.includes(today)) {
+                        let val = parseInt(localStorage.getItem(key) || '0');
+                        if (!isNaN(val)) used += val;
+                    }
+                }
+                console.log(`Quota Debug: Global Used=${used}`);
+            }
+
+            const pct = Math.min((used / max) * 100, 100);
+
+            // Update UI
+            document.getElementById('quota-text').textContent = `${used} / ${max}`;
+            document.getElementById('quota-bar').style.width = `${pct}%`;
+
+            // Color Coding
+            const bar = document.getElementById('quota-bar');
+            if (pct >= 100) bar.style.background = '#ef4444'; // Red
+            else if (pct > 50) bar.style.background = '#fbbf24'; // Yellow
+            else bar.style.background = 'var(--primary)'; // Green
+
+            // Update Tier Text (Using ID)
+            const tierLabel = document.getElementById('quota-tier-info');
+            if (tierLabel) {
+                tierLabel.innerHTML = targetUser
+                    ? `Tier: <strong style="color:#cbd5e1;">Free (Limit: ${max})</strong>`
+                    : `Tier: <strong style="color:#cbd5e1;">Global Total (Limit: ${max})</strong>`;
+            }
+        }
+
+        let selectedTargetUser = null;
+
+        function saveKey() {
+            const key = document.getElementById('admin-gemini-key').value.trim();
+            if (!key) return alert("Key cannot be empty");
+
+            const time = new Date().toLocaleString();
+            let msgs = JSON.parse(localStorage.getItem('agrisense_messages') || '[]');
+
+            if (!selectedTargetUser) {
+                // Fallback to Global if no user selected (or alert user to select one)
+                if (confirm("No user selected. Save as GLOBAL Default Key for all users?")) {
+                    localStorage.setItem('agrisense_api_key_gemini', key);
+
+                    // 1. Notify Admin
+                    msgs.unshift({
+                        id: Date.now(),
+                        from: 'System',
+                        to: 'admin',
+                        text: `✅ Successfully pushed Global Key to ALL users.`,
+                        time: time,
+                        read: false
+                    });
+
+                    // 2. Notify ALL Users
+                    const users = JSON.parse(localStorage.getItem('agrisense_users') || '[]');
+                    users.forEach((u, index) => {
+                        msgs.unshift({
+                            id: Date.now() + index + 1,
+                            from: 'Admin',
+                            to: u.username,
+                            text: `🔑 Admin has successfully updated the Global Gemini API Key.`,
+                            time: time,
+                            read: false
+                        });
+                    });
+
+                } else {
+                    return;
+                }
+            } else {
+                // Save for Specific User
+                localStorage.setItem('agrisense_key_' + selectedTargetUser, key);
+
+                // 1. Notify Admin
+                msgs.unshift({
+                    id: Date.now(),
+                    from: 'System',
+                    to: 'admin',
+                    text: `✅ Successfully pushed key to user '${selectedTargetUser}'.`,
+                    time: time,
+                    read: false
+                });
+
+                // 2. Notify Target User
+                msgs.unshift({
+                    id: Date.now() + 1,
+                    from: 'Admin',
+                    to: selectedTargetUser,
+                    text: `🔑 Admin has successfully updated your Gemini API Key.`,
+                    time: time,
+                    read: false
+                });
+            }
+
+            // Save Messages
+            localStorage.setItem('agrisense_messages', JSON.stringify(msgs));
+
+            const msg = document.getElementById('key-msg');
+            // Check if key-msg exists, if not create it or use alert? (It wasn't in the viewed file earlier, possibly dynamic or missing ID)
+            // The previous code referenced 'key-msg' but I don't see it in the HTML structure viewed earlier.
+            // I'll stick to alerts mainly or rely on the inbox we just populated.
+            // But let's try to update the UI if the element exists.
+            if (msg) {
+                msg.textContent = selectedTargetUser
+                    ? `✅ Pushed to ${selectedTargetUser}`
+                    : "✅ Pushed to Global";
+                msg.style.color = "#4ade80";
+                setTimeout(() => msg.textContent = "", 3000);
+            } else {
+                alert("Key Pushed Successfully! Notifications sent.");
+            }
+
+            // Re-select to confirm visual state
+            if (selectedTargetUser) selectUser(selectedTargetUser);
+
+            // Refresh Inbox Badge for Admin
+            checkMessages();
+        }
+
+        function loadLogs() {
+            const logs = JSON.parse(localStorage.getItem('agrisense_login_logs') || '[]');
+            const tbody = document.getElementById('log-table-body');
+
+            if (logs.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#64748b;">No logs found</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = logs.map(log => `
+            <tr>
+                <td style="color:#94a3b8; font-size:0.8rem;">${log.time}</td>
+                <td><strong>${log.user}</strong></td>
+                <td><span style="background:rgba(255,255,255,0.1); padding:2px 6px; border-radius:4px; font-size:0.75rem;">${log.role}</span></td>
+                <td class="${log.status.includes('Success') ? 'status-success' : 'status-failed'}">${log.status}</td>
+                <td style="color:${log.logoutTime ? '#94a3b8' : '#10b981'}; font-size:0.8rem;">
+                    ${log.logoutTime || 'Active'}
+                </td>
+            </tr>
+        `).join('');
+        }
+
+        function loadUsers() {
+            const users = JSON.parse(localStorage.getItem('agrisense_users') || '[]');
+            // Legacy support
+            const legacyUser = localStorage.getItem('custom_user');
+            if (legacyUser && !users.find(u => u.username === legacyUser)) {
+                users.push({ username: legacyUser, name: 'Legacy User', role: 'Customer', joined: 'N/A' });
+            }
+
+            const list = document.getElementById('user-list');
+
+            if (users.length === 0) {
+                list.innerHTML = '<p style="color:#64748b;">No registered customers yet.</p>';
+            } else {
+                list.innerHTML = users.map((u, index) => {
+                    const isBlocked = u.blocked === true;
+                    return `
+                <div onclick="selectUser('${u.username}')" style="display:flex; justify-content:space-between; align-items:center; padding:12px; background:rgba(0,0,0,0.2); border-radius:6px; margin-bottom:5px; border-left:4px solid ${isBlocked ? '#ef4444' : 'var(--primary)'}; cursor:pointer; opacity:${isBlocked ? '0.7' : '1'};">
+                    <div>
+                        <div style="font-weight:bold; font-size:1.1rem; color:${isBlocked ? '#ef4444' : 'white'};">
+                            ${u.username} 
+                            <span style="font-size:0.8rem; font-weight:normal; opacity:0.7;">(${u.name || 'User'})</span>
+                            ${isBlocked ? '<span style="background:#ef4444; color:white; padding:2px 6px; border-radius:4px; font-size:0.7rem; margin-left:8px;">BLOCKED</span>' : ''}
+                        </div>
+                        <div style="font-size:0.8rem; color:#64748b;">
+                            <i class="fa-solid fa-mobile-screen" style="margin-right:4px;"></i> ${u.mobile || 'Email/Legacy'} 
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:10px;">
+                        <button onclick="event.stopPropagation(); toggleBlockUser('${u.username}')" 
+                                style="background:${isBlocked ? '#22c55e' : '#f59e0b'}; color:white; border:none; padding:8px 12px; border-radius:4px; cursor:pointer;">
+                            ${isBlocked ? '<i class="fa-solid fa-unlock"></i> Unblock' : '<i class="fa-solid fa-ban"></i> Block'}
+                        </button>
+                        <button onclick="event.stopPropagation(); deleteUser('${u.username}')" class="btn-danger" style="padding:8px 12px; display:flex; gap:6px; align-items:center;">
+                            <i class="fa-solid fa-trash"></i> Remove
+                        </button>
+                    </div>
+                </div>
+            `;
+                }).join('');
+            }
+        }
+
+        function toggleBlockUser(username) {
+            let users = JSON.parse(localStorage.getItem('agrisense_users') || '[]');
+            const index = users.findIndex(u => u.username === username);
+
+            if (index !== -1) {
+                // Toggle status
+                users[index].blocked = !users[index].blocked;
+                localStorage.setItem('agrisense_users', JSON.stringify(users));
+
+                // Force Logout if blocking active user (optional, but good security)
+                if (users[index].blocked) {
+                    // We can't clear their sessionStorage directly, but the session watchdog in app.js could handle it.
+                    // For now, next login is prevented.
+                }
+
+                loadUsers(); // Refresh UI
+            }
+
+        }
+
+        function selectUser(username) {
+            selectedTargetUser = username;
+
+            // Update the API Key Header to show context
+            const label = document.querySelector('label[for="admin-gemini-key"]');
+            if (label) {
+                label.innerHTML = `Active Gemini API Key <span style="color:#fbbf24; font-weight:bold;">(Target: ${username})</span>`;
+
+                // Load this user's specific key if it exists, or show placeholder
+                const userKey = localStorage.getItem('agrisense_key_' + username);
+                const input = document.getElementById('admin-gemini-key');
+                input.value = userKey || '';
+                input.placeholder = userKey ? "Enter new key to overwrite authentication..." : "Enter key for " + username;
+
+                input.style.borderColor = '#fbbf24';
+                setTimeout(() => input.style.borderColor = '#334155', 1000);
+            }
+
+            // Refresh Quota Visualizer for Selected User
+            loadQuota(username);
+        }
+
+        function deleteUser(username) {
+            if (confirm(`⚠️ DANGER ZONE ⚠️\n\nAre you sure you want to PERMANENTLY DELETE user "${username}"?\n\nThey will no longer be able to login.`)) {
+                let users = JSON.parse(localStorage.getItem('agrisense_users') || '[]');
+                users = users.filter(u => u.username !== username);
+                localStorage.setItem('agrisense_users', JSON.stringify(users));
+
+                // Legacy cleanup
+                if (localStorage.getItem('custom_user') === username) {
+                    localStorage.removeItem('custom_user');
+                    localStorage.removeItem('custom_pass');
+                }
+
+                loadUsers();
+                alert("User deleted successfully.");
+            }
+        }
+
+        function clearLogs() {
+            if (confirm("Clear all logs?")) {
+                localStorage.removeItem('agrisense_login_logs');
+                loadLogs();
+            }
+        }
+
+        // ... existing functions ...
+
+        // --- INBOX LOGIC ---
+        function checkMessages() {
+            const msgs = JSON.parse(localStorage.getItem('agrisense_messages') || '[]');
+            const unread = msgs.filter(m => !m.read).length;
+            const badge = document.getElementById('msg-badge');
+
+            if (unread > 0) {
+                badge.style.display = 'block';
+                badge.textContent = unread;
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        function openInbox() {
+            document.getElementById('inbox-modal').style.display = 'flex';
+
+            // Render Messages
+            const list = document.getElementById('inbox-list');
+            const allMsgs = JSON.parse(localStorage.getItem('agrisense_messages') || '[]');
+            const msgs = allMsgs.filter(m => !m.to || m.to === 'admin');
+
+            if (msgs.length === 0) {
+                list.innerHTML = '<div style="text-align:center; color:#64748b; padding:20px;">No messages received.</div>';
+                return;
+            }
+
+            list.innerHTML = msgs.map(m => `
+                <div class="msg-item ${!m.read ? 'msg-unread' : ''}">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                        <strong style="color:white;">${m.user || (m.from || 'Unknown')}</strong>
+                        <span style="font-size:0.8rem; color:#94a3b8;">${m.time}</span>
+                    </div>
+                    <div style="color:#cbd5e1; font-size:0.9rem; margin-bottom:8px;">${m.text}</div>
+                    <div style="text-align:right;">
+                        <button onclick="window.replyToUser(this.getAttribute('data-user'))" 
+                                data-user="${(m.user || m.from || '').replace(/"/g, '&quot;')}"
+                                style="background:#0f172a; border:1px solid #334155; color:#38bdf8; padding:4px 10px; border-radius:4px; cursor:pointer; font-size:0.75rem;">
+                            <i class="fa-solid fa-reply"></i> Reply
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            // Mark all as read (simple approach)
+            const updated = msgs.map(m => ({ ...m, read: true }));
+            localStorage.setItem('agrisense_messages', JSON.stringify(updated));
+
+            // Hide badge immediately
+            document.getElementById('msg-badge').style.display = 'none';
+        }
+
+        function closeInbox() {
+            document.getElementById('inbox-modal').style.display = 'none';
+            checkMessages();
+        }
+
+        function clearAllMessages() {
+            if (confirm("Delete all messages?")) {
+                localStorage.removeItem('agrisense_messages');
+                closeInbox();
+                alert("Inbox Cleared.");
+            }
+        }
+
+        window.replyToUser = function (username) {
+            console.log("Attempting reply to:", username);
+            if (!username || username === 'Unknown') return alert("Cannot reply to unknown user.");
+
+            const reply = prompt(`Reply to ${username}:`);
+            if (reply && reply.trim() !== "") {
+                const msgs = JSON.parse(localStorage.getItem('agrisense_messages') || '[]');
+                msgs.unshift({
+                    id: Date.now(),
+                    from: 'admin',
+                    to: username,
+                    text: reply,
+                    time: new Date().toLocaleString(),
+                    read: false
+                });
+                localStorage.setItem('agrisense_messages', JSON.stringify(msgs));
+                alert("✅ Reply Sent to " + username);
+            }
+        };
+
+        function toggleSupportSettings() {
+            const card = document.getElementById('support-settings-card');
+            if (card.style.display === 'none') {
+                card.style.display = 'block';
+                card.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                card.style.display = 'none';
+            }
+        }
+
+        function toggleAccessControl() {
+            const card = document.getElementById('access-control-card');
+            if (card.style.display === 'none') {
+                card.style.display = 'block';
+                card.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                card.style.display = 'none';
+            }
+        }
+
+        function logout() {
+            if (confirm("Are you sure you want to logout?")) {
+                sessionStorage.clear();
+                window.location.replace('login.html');
+            }
+        }
+
+        // Initialize Call Additions
+        setInterval(checkMessages, 2000); // Poll for new messages
+        checkMessages();
+
+        // --- ERROR ALERT LOGIC ---
+        // Need to wait for ErrorService to load or just implement raw localStorage check for robustness
+        setInterval(checkAlerts, 2000);
+        checkAlerts();
+
+        function checkAlerts() {
+            const errors = JSON.parse(localStorage.getItem('agrisense_error_reports') || '[]');
+            const unread = errors.filter(e => !e.read).length;
+            const badge = document.getElementById('alert-badge');
+
+            if (unread > 0) {
+                badge.style.display = 'block';
+                badge.textContent = unread;
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        function openAlerts() {
+            document.getElementById('alerts-modal').style.display = 'flex';
+            const list = document.getElementById('alerts-list');
+            const errors = JSON.parse(localStorage.getItem('agrisense_error_reports') || '[]');
+
+            if (errors.length === 0) {
+                list.innerHTML = '<div style="text-align:center; color:#64748b; padding:20px;">No alerts reported. System Healthy.</div>';
+                return;
+            }
+
+            list.innerHTML = errors.map(e => `
+                <div class="msg-item ${!e.read ? 'msg-unread' : ''}" style="border-left-color: ${getErrorColor(e.type)};">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                        <strong style="color:white;"><i class="fa-solid fa-user"></i> ${e.user || 'Unknown'}</strong>
+                        <span style="font-size:0.8rem; color:#94a3b8;">${new Date(e.timestamp).toLocaleTimeString()}</span>
+                    </div>
+                    <div style="font-weight:bold; color:${getErrorColor(e.type)}; font-size:0.85rem; margin-bottom:4px;">
+                        ${e.type}
+                    </div>
+                    <div style="color:#cbd5e1; font-size:0.9rem; margin-bottom:8px;">${e.message}</div>
+                    
+                    ${e.details ? `<div style="background:rgba(0,0,0,0.3); padding:8px; border-radius:4px; font-family:monospace; font-size:0.75rem; color:#fca5a5; max-height:100px; overflow-y:auto; margin-bottom:8px;">${e.details}</div>` : ''}
+
+                    <div style="text-align:right;">
+                        <button onclick="dismissError('${e.id}')" 
+                                style="background:none; color:#64748b; border:none; cursor:pointer; font-size:0.8rem;">
+                            <i class="fa-solid fa-check"></i> Mark Read
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            // Auto-mark all as read when opened? Maybe better to let admin dismiss manually or mark all.
+            // Let's NOT mark read automatically so they persist until dismissed or "Dismiss All".
+        }
+
+        function getErrorColor(type) {
+            if (type === 'AI_ERROR') return '#f472b6'; // Pink
+            if (type === 'SOFTWARE_ERROR') return '#ef4444'; // Red
+            return '#fbbf24'; // Orange/Yellow
+        }
+
+        function closeAlerts() {
+            document.getElementById('alerts-modal').style.display = 'none';
+            checkAlerts();
+        }
+
+        function dismissError(id) {
+            let errors = JSON.parse(localStorage.getItem('agrisense_error_reports') || '[]');
+            const idx = errors.findIndex(e => e.id === id);
+            if (idx !== -1) {
+                errors[idx].read = true;
+                localStorage.setItem('agrisense_error_reports', JSON.stringify(errors));
+                openAlerts(); // Re-render
+                checkAlerts(); // Update Badge
+            }
+        }
+
+        function clearAllAlerts() {
+            if (confirm("Dismiss all alerts?")) {
+                let errors = JSON.parse(localStorage.getItem('agrisense_error_reports') || '[]');
+                errors = errors.map(e => ({ ...e, read: true }));
+                localStorage.setItem('agrisense_error_reports', JSON.stringify(errors));
+                closeAlerts();
+            }
+        }
+
+    </script>
+
+    <script src="js/services/error_service.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriSense | Login</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* ... existing styles ... */
+        .toast-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            color: #333;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            z-index: 1000;
+            width: 300px;
+            transform: translateX(120%);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-left: 4px solid #10b981;
+            /* SMS Green */
+            /* Gmail Red */
+            font-family: 'Arial', sans-serif;
+        }
+
+        .toast-notification.show {
+            transform: translateX(0);
+        }
+
+        .toast-icon {
+            color: #10b981;
+            font-size: 1.5rem;
+        }
+
+        .toast-content h4 {
+            margin: 0 0 4px 0;
+            font-size: 0.95rem;
+            font-weight: bold;
+        }
+
+        .toast-content p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        body {
+            background-image: url('https://images.unsplash.com/photo-1625246333195-58197bd47d72?q=80&w=2070');
+            /* Farm Background */
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.85);
+            /* Dark tint */
+            backdrop-filter: blur(4px);
+        }
+
+        .login-card {
+            position: relative;
+            width: 400px;
+            background: rgba(30, 41, 59, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            z-index: 10;
+        }
+
+        .login-header {
+            margin-bottom: 2rem;
+        }
+
+        .login-header i {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header h1 {
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .input-group {
+            margin-bottom: 1.2rem;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 0.4rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            color: white;
+            font-family: inherit;
+        }
+
+        .input-group input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .captcha-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 1.2rem;
+            align-items: center;
+        }
+
+        #captcha-canvas {
+            background: #cbd5e1;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-login:hover {
+            background: #059669;
+        }
+
+        .error-msg {
+            color: #ef4444;
+            font-size: 0.85rem;
+            margin-top: 1rem;
+            min-height: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="overlay"></div>
+
+    <!-- MOCK NOTIFICATION CONTAINER -->
+    <div id="mock-toast" class="toast-notification">
+        <div class="toast-icon">
+            <i class="fa-brands fa-google"></i>
+        </div>
+        <div class="toast-content">
+            <h4>New Message (Gmail)</h4>
+            <p id="toast-msg">...</p>
+        </div>
+    </div>
+
+    <!-- FIREBASE RECAPTCHA CONTAINER -->
+    <div id="recaptcha-container"></div>
+
+    <div class="login-card">
+        <div class="login-header" style="text-align: center; margin-bottom: 2rem;">
+            <img src="assets/nerula_logo.jpg"
+                style="height: 100px; width: 100px; border-radius: 50%; box-shadow: 0 0 20px rgba(16, 185, 129, 0.4); border: 3px solid rgba(16, 185, 129, 0.2); margin-bottom: 1rem;">
+            <h1 style="font-size: 1.5rem; color: white; margin-bottom: 0.5rem;">AgriSense</h1>
+            <p style="color: #64748b; font-size: 0.9rem; letter-spacing: 1px;">Secure Farm Access</p>
+        </div>
+
+        <!-- LOGIN FORM -->
+        <form id="login-form">
+            <div class="input-group">
+                <label>Username</label>
+                <input type="text" id="username" placeholder="Enter username">
+            </div>
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="Enter password">
+            </div>
+
+            <div class="input-group">
+                <label>Security Check</label>
+                <div class="captcha-box">
+                    <canvas id="captcha-canvas" width="120" height="40" title="Click to refresh"></canvas>
+                    <input type="text" id="captcha-input" placeholder="Code" style="width: 100px;">
+                    <button type="button" onclick="generateCaptcha()"
+                        style="background:none; border:none; color:#64748b; cursor:pointer;"><i
+                            class="fa-solid fa-arrows-rotate"></i></button>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-login">Login System</button>
+            <div class="error-msg" id="error-msg"></div>
+
+            <div style="margin-top:1.5rem; font-size:0.85rem; color:#94a3b8;">
+                New User? <a href="#" onclick="toggleView('register')"
+                    style="color:var(--primary); text-decoration:none;">Create Account</a>
+            </div>
+        </form>
+
+        <!-- REGISTER FORM (Hidden by default) -->
+        <form id="register-form" style="display:none;">
+            <div class="input-group">
+                <label>Full Name</label>
+                <input type="text" id="reg-name" placeholder="John Doe">
+            </div>
+            <div class="input-group">
+                <label>Farm Name</label>
+                <input type="text" id="reg-farm" placeholder="Green Valley">
+            </div>
+
+
+            <div id="verification-status" style="margin-bottom:1rem; display:none;"></div>
+
+            <button type="submit" id="btn-generate" class="btn-login"
+                style="background:#3b82f6; cursor:pointer;">Generate ID</button>
+
+            <div style="margin-top:1.5rem; font-size:0.85rem; color:#94a3b8;">
+                Have an account? <a href="#" onclick="toggleView('login')"
+                    style="color:var(--primary); text-decoration:none;">Login Here</a>
+            </div>
+
+            <!-- Credentials Display -->
+            <div id="new-creds"
+                style="display:none; margin-top:1rem; padding:1rem; background:rgba(16, 185, 129, 0.1); border:1px solid var(--primary); border-radius:8px; text-align:left;">
+                <h4 style="color:var(--primary); margin-bottom:0.5rem;">Registration Successful!</h4>
+                <p style="font-size:0.85rem; color:#cbd5e1; margin-bottom:0.5rem;">Save these credentials:</p>
+                <div style="color:white; font-family:monospace; margin-bottom:4px;">User: <strong
+                        id="gen-user"></strong></div>
+                <div style="color:white; font-family:monospace;">Pass: <strong id="gen-pass"></strong></div>
+                <button type="button" onclick="toggleView('login')"
+                    style="margin-top:10px; width:100%; padding:6px; background:rgba(255,255,255,0.1); color:white; border:none; border-radius:4px; cursor:pointer;">Go
+                    to Login</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script>
+        (function () {
+            // ⚠️ REPLACE THIS WITH YOUR PUBLIC KEY FROM EMAILJS DASHBOARD
+            emailjs.init("YOUR_PUBLIC_KEY");
+        })();
+    </script>
+
+    <script>
+        // Simple Auth Logic
+        let currentCaptcha = '';
+
+        function generateCaptcha() {
+            const canvas = document.getElementById('captcha-canvas');
+            const ctx = canvas.getContext('2d');
+
+            // Clear
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#e2e8f0';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Generate Random String
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // No I, 1, O, 0
+            let code = '';
+            for (let i = 0; i < 5; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            currentCaptcha = code;
+
+            // Draw Text
+            ctx.font = 'bold 24px Arial';
+            ctx.fillStyle = '#334155';
+            ctx.textBaseline = 'middle';
+            ctx.textAlign = 'center';
+
+            // Add noise
+            for (let i = 0; i < 5; i++) {
+                ctx.strokeStyle = `rgba(0,0,0,0.${Math.floor(Math.random() * 5)})`;
+                ctx.beginPath();
+                ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
+                ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
+                ctx.stroke();
+            }
+
+            ctx.fillText(code, canvas.width / 2, canvas.height / 2);
+        }
+
+        function toggleView(view) {
+            document.getElementById('login-form').style.display = view === 'login' ? 'block' : 'none';
+            document.getElementById('register-form').style.display = view === 'register' ? 'block' : 'none';
+            document.getElementById('error-msg').textContent = '';
+            if (view === 'login') generateCaptcha();
+        }
+
+        // OTP Logic (Firebase Real SMS)
+        let confirmationResult = null;
+        let isMobileVerified = false;
+        let recaptchaVerifier = null;
+
+        function initRecaptcha() {
+            if (!recaptchaVerifier) {
+                recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+                    'size': 'invisible',
+                    'callback': (response) => {
+                        // reCAPTCHA solved, allow signInWithPhoneNumber.
+                    }
+                });
+            }
+        }
+
+        function sendOTP() {
+            const mobile = document.getElementById('reg-mobile').value.trim();
+            const btn = document.getElementById('btn-send-otp');
+
+            // Format Number E.164 (Assuming +91 for India as default if missing)
+            // Ideally, user should input +91... but we can prepend if 10 digits
+            let phoneNumber = mobile;
+            if (/^\d{10}$/.test(mobile)) {
+                phoneNumber = '+91' + mobile; // Defaulting to India for convenience
+            } else if (!/^\+\d{10,15}$/.test(mobile)) {
+                alert("⚠️ Please enter a valid mobile number (e.g. 9876543210 or +1234567890)");
+                return;
+            }
+
+            // --- STRICT CONFIG CHECK ---
+            // User requested REAL SMS only.
+            if (typeof firebaseConfig === 'undefined' || firebaseConfig.apiKey.includes("YOUR_FIREBASE_API_KEY")) {
+                alert("⚠️ REAL SMS SETUP REQUIRED:\n\nYou must paste your Firebase Config Keys in 'login.html' (Line ~597) to send real SMS.\n\n1. Go to console.firebase.google.com\n2. Create Project > Enable Phone Auth\n3. Copy Config > Paste in code.");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = "Sending Real SMS...";
+
+            initRecaptcha();
+
+            const appVerifier = recaptchaVerifier;
+            firebase.auth().signInWithPhoneNumber(phoneNumber, appVerifier)
+                .then((result) => {
+                    // SMS sent. Prompt user to type the code from the message
+                    confirmationResult = result;
+                    console.log("SMS Sent to " + phoneNumber);
+
+                    showOTPInput();
+
+                    // Show success toast (repurposed from mock)
+                    showToast(phoneNumber, "SENT", true);
+
+                    btn.textContent = "Resend";
+                    btn.disabled = false;
+                }).catch((error) => {
+                    console.error("SMS Error:", error);
+                    alert("❌ SMS Failed: " + error.message + "\n\n(Check Firebase Console > Authentication > Phone Method Enabled?)");
+                    btn.textContent = "Send OTP";
+                    btn.disabled = false;
+
+                    // Reset reCAPTCHA so user can try again
+                    if (window.recaptchaVerifier) {
+                        window.recaptchaVerifier.render().then(function (widgetId) {
+                            grecaptcha.reset(widgetId);
+                        });
+                    }
+                });
+        }
+
+        function showToast(target, otp, isReal) {
+            const toast = document.getElementById('mock-toast');
+            const msg = document.getElementById('toast-msg');
+            const icon = document.querySelector('.toast-icon i');
+
+            icon.className = 'fa-solid fa-message';
+            document.querySelector('.toast-content h4').textContent = "SMS Status";
+            msg.innerHTML = `SMS sent to <strong>${target}</strong>.<br>Please check your phone.`;
+
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 6000);
+        }
+
+        function showOTPInput() {
+            document.getElementById('otp-section').style.display = 'block';
+            document.getElementById('otp-input').focus();
+            const status = document.getElementById('verification-status');
+            status.style.display = 'block';
+            status.innerHTML = `<span style="color:#cbd5e1; font-size:0.85rem;"><i class="fa-solid fa-paper-plane"></i> Verification code sent.</span>`;
+        }
+
+        function verifyOTP() {
+            const code = document.getElementById('otp-input').value.trim();
+            const status = document.getElementById('verification-status');
+            const genBtn = document.getElementById('btn-generate');
+
+            // Real Firebase Check
+            if (!confirmationResult) {
+                alert("Please request OTP first.");
+                return;
+            }
+
+            confirmationResult.confirm(code).then((result) => {
+                const user = result.user;
+                console.log("Verified User:", user);
+                onVerificationSuccess(status, genBtn);
+            }).catch((error) => {
+                console.error("Verify Error:", error);
+                alert("❌ Incorrect OTP. Please try again.");
+            });
+        }
+
+        function onVerificationSuccess(status, genBtn) {
+            status.style.display = 'block';
+            status.innerHTML = '<span style="color:#4ade80;"><i class="fa-solid fa-circle-check"></i> Mobile Verified Successfully</span>';
+
+            // UI Updates
+            document.getElementById('otp-section').style.display = 'none';
+            document.getElementById('btn-send-otp').style.display = 'none';
+            document.getElementById('reg-mobile').disabled = true;
+
+            genBtn.style.display = 'block';
+            genBtn.disabled = false;
+            genBtn.style.opacity = '1';
+            genBtn.style.cursor = 'pointer';
+
+            isMobileVerified = true;
+        }
+
+        // Handle Registration
+        document.getElementById('register-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Mobile verification removed as requested
+            // if (!isMobileVerified) return alert("Please verify mobile number first");
+
+            const name = document.getElementById('reg-name').value;
+
+            if (!name) return alert("Name required");
+
+            // Generate Credentials
+            const user = name.toLowerCase().replace(/\s+/g, '') + Math.floor(Math.random() * 1000);
+            const pass = Math.random().toString(36).slice(-8);
+
+            // Show Credentials
+            document.getElementById('gen-user').textContent = user;
+            document.getElementById('gen-pass').textContent = pass;
+            document.getElementById('new-creds').style.display = 'block';
+
+            // Save to LocalStorage for persistence (Multi-User Support)
+            const newUser = {
+                username: user,
+                password: pass,
+                name: name,
+                farm: document.getElementById('reg-farm').value || 'Unknown Farm',
+                mobile: 'Not Provided',
+                email: 'N/A',
+                joined: new Date().toLocaleDateString()
+            };
+
+            const existingUsers = JSON.parse(localStorage.getItem('agrisense_users') || '[]');
+            existingUsers.push(newUser);
+            localStorage.setItem('agrisense_users', JSON.stringify(existingUsers));
+        });
+
+        // Handle Login
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            // --- ACCESS CONTROL CHECK ---
+            const userInput = document.getElementById('username').value.trim();
+            if (userInput !== 'nerula' && userInput !== 'admin') { // Admins bypass
+                const settings = JSON.parse(localStorage.getItem('agrisense_access_settings') || 'null');
+                if (settings) {
+                    const now = new Date();
+                    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+                    const [sh, sm] = settings.start.split(':').map(Number);
+                    const [eh, em] = settings.end.split(':').map(Number);
+                    const startMinutes = sh * 60 + sm;
+                    const endMinutes = eh * 60 + em;
+
+                    let isOpen = false;
+                    if (startMinutes <= endMinutes) {
+                        isOpen = currentMinutes >= startMinutes && currentMinutes < endMinutes;
+                    } else { // Overnight
+                        isOpen = currentMinutes >= startMinutes || currentMinutes < endMinutes;
+                    }
+
+                    if (!isOpen) {
+                        const err = document.getElementById('error-msg');
+                        err.textContent = `⛔ ${settings.message}`;
+                        err.style.color = '#ef4444';
+                        return;
+                    }
+                }
+            }
+            // ----------------------------
+
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            const captcha = document.getElementById('captcha-input').value.toUpperCase();
+            const err = document.getElementById('error-msg');
+
+            // 1. Check CAPTCHA
+            if (captcha !== currentCaptcha) {
+                err.textContent = 'Invalid CAPTCHA code';
+                return;
+            }
+
+            // 2. Auth Logic
+            // Admin Credentials (Hardcoded for demo as requested)
+            const isAdmin = (user === 'admin' && pass === 'admin123'); // Custom "special" password
+
+            // Helper to check against stored users
+            const users = JSON.parse(localStorage.getItem('agrisense_users') || '[]');
+            // Legacy support for single user (if any)
+            const legacyUser = localStorage.getItem('custom_user');
+            const legacyPass = localStorage.getItem('custom_pass');
+            if (legacyUser) {
+                users.push({ username: legacyUser, password: legacyPass });
+            }
+
+            // Normalize inputs
+            const inputUser = user.trim().toLowerCase();
+            const inputPass = pass.trim();
+
+            // Find User
+            const validUser = users.find(u => u.username.toLowerCase() === inputUser && u.password === inputPass);
+            const isDemoUser = (inputUser === 'demo' && inputPass === 'demo123');
+
+            if (validUser && validUser.blocked) {
+                err.textContent = '⛔ Account Suspended. Contact Admin.';
+                err.style.color = '#ef4444';
+                return;
+            }
+
+            if (isAdmin || validUser || isDemoUser) {
+                err.style.color = '#4ade80';
+                err.textContent = `Welcome, ${user}! Verifying Location...`; // Updated status
+
+                // 3. Log the Activity
+                const logs = JSON.parse(localStorage.getItem('agrisense_login_logs') || '[]');
+                const newLog = {
+                    user: user,
+                    role: isAdmin ? 'Admin' : 'Customer',
+                    time: new Date().toLocaleString(),
+                    status: 'Success'
+                };
+
+                // 4. Set Session
+                sessionStorage.setItem('agrisense_auth', 'true');
+                sessionStorage.setItem('agrisense_user', user);
+                sessionStorage.setItem('agrisense_role', isAdmin ? 'admin' : 'customer');
+
+                // 5. Geolocation Capture (for Admin Map)
+                // We attempt to get location. If it fails/timeout, we save without it (or use mock for demo).
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        newLog.location = { lat, lng }; // Add to logs
+
+                        // Update User Record if exists
+                        if (validUser) {
+                            validUser.lastLocation = { lat, lng };
+                            const users = JSON.parse(localStorage.getItem('agrisense_users') || '[]');
+                            const uIndex = users.findIndex(u => u.username === user);
+                            if (uIndex !== -1) {
+                                users[uIndex].lastLocation = { lat, lng };
+                                localStorage.setItem('agrisense_users', JSON.stringify(users));
+                            }
+                        }
+
+                        finishLogin(logs, newLog, isAdmin);
+                    },
+                    (error) => {
+                        console.warn("Location denied/failed:", error);
+                        // Demo Fallback: Simulate a location in Tamil Nadu for visualization purposes
+                        // (Only if user is NOT admin, to show "users" on map)
+                        if (!isAdmin) {
+                            const mockLat = 11.1271 + (Math.random() * 2 - 1); // Approx Tamil Nadu center
+                            const mockLng = 78.6569 + (Math.random() * 2 - 1);
+                            newLog.location = { lat: mockLat, lng: mockLng, type: 'simulated' };
+                        }
+
+                        finishLogin(logs, newLog, isAdmin);
+                    },
+                    { timeout: 3000 } // Don't wait too long
+                );
+
+            } else {
+                err.textContent = 'Invalid Username or Password';
+
+                // Log Failed Attempt
+                const logs = JSON.parse(localStorage.getItem('agrisense_login_logs') || '[]');
+                logs.unshift({
+                    user: user,
+                    role: 'Unknown',
+                    time: new Date().toLocaleString(),
+                    status: 'Failed (Wrong Credentials)'
+                });
+                localStorage.setItem('agrisense_login_logs', JSON.stringify(logs.slice(0, 50)));
+            }
+        });
+
+        function finishLogin(logs, newLog, isAdmin) {
+            logs.unshift(newLog);
+            localStorage.setItem('agrisense_login_logs', JSON.stringify(logs.slice(0, 50)));
+
+            // Redirect
+            if (isAdmin) {
+                window.location.replace('admin_dashboard.html');
+            } else {
+                window.location.replace('index.html');
+            }
+        }
+
+
+        // Init
+        generateCaptcha();
+    </script>
+    <!-- Firebase SDKs (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+    <script>
+        // FIREBASE CONFIGURATION (Provided by User)
+        const firebaseConfig = {
+            apiKey: "AIzaSyA9AVV7BbSZxCmbQ9Ei-pV04UUJ3CkCWUU",
+            authDomain: "nerula-6a0e9.firebaseapp.com",
+            projectId: "nerula-6a0e9",
+            storageBucket: "nerula-6a0e9.firebasestorage.app",
+            messagingSenderId: "1060406703460",
+            appId: "1:1060406703460:web:a74b42c93b792484db3671",
+            measurementId: "G-K95WJSNVQ9"
+        };
+
+        // Initialize Firebase
+        try {
+            firebase.initializeApp(firebaseConfig);
+            console.log("Firebase Initialized with Real Keys");
+        } catch (e) {
+            console.error("Firebase Init Error:", e);
+        }
+    </script>
+</body>
+
+</html>

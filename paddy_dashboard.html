@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Agri - Paddy Disease Detection</title>
+    <!-- Using Google Fonts for a premium look -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-bg: #0f172a;
+            --card-bg: #1e293b;
+            --accent-green: #10b981;
+            --accent-glow: rgba(16, 185, 129, 0.5);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        header {
+            padding: 1rem 2rem;
+            background: rgba(15, 23, 42, 0.9);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 { margin: 0; font-weight: 700; font-size: 1.5rem; letter-spacing: 0.05em; }
+        .logo-text span { color: var(--accent-green); }
+
+        .dashboard-container {
+            display: flex;
+            flex: 1;
+            padding: 1.5rem;
+            gap: 1.5rem;
+            height: calc(100vh - 80px);
+        }
+
+        /* Left Panel - Camera Feed */
+        .camera-section {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            position: relative;
+        }
+
+        .video-container {
+            flex: 1;
+            border-radius: 16px;
+            overflow: hidden;
+            background: #000;
+            position: relative;
+            border: 2px solid rgba(255,255,255,0.1);
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.6);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: var(--accent-green);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .overlay-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        .scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--accent-green);
+            box-shadow: 0 0 15px var(--accent-green);
+            animation: scan 3s linear infinite;
+            display: none; /* Hidden by default */
+        }
+        
+        .scan-line.active { display: block; }
+
+        @keyframes scan { 0% { top: 0; } 50% { top: 100%; } 100% { top: 0; } }
+
+        .camera-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        button.btn-primary {
+            background: var(--accent-green);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px var(--accent-glow);
+        }
+
+        button.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--accent-glow); }
+        button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        .api-input-container {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        
+        input.api-key-input {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            width: 250px;
+        }
+
+        /* Right Panel - Analysis & Results */
+        .analysis-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            overflow-y: auto;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .log-terminal {
+            font-family: 'Consolas', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            height: 150px;
+            overflow-y: auto;
+            background: rgba(0,0,0,0.3);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .log-entry { margin-bottom: 5px; }
+        .log-info { color: #60a5fa; }
+        .log-success { color: var(--accent-green); }
+        .log-warn { color: #fbbf24; }
+
+        .result-card {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .result-header {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 0.5rem;
+        }
+
+        .disease-detail {
+            margin-bottom: 1rem;
+        }
+        .disease-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .disease-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #fff;
+        }
+        .severity-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .severity-low { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .severity-high { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+
+        .solution-box {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-green);
+            flex: 1;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo-text">
+        <h1>Smart<span>Agri</span> Drone View</h1>
+    </div>
+    <div>
+        <span style="font-size: 0.9rem; color: var(--text-muted);">System Status: </span>
+        <span style="color: var(--accent-green);">Online</span>
+    </div>
+</header>
+
+<div class="dashboard-container">
+    <!-- Camera Feed -->
+    <div class="camera-section">
+        <div class="video-container">
+            <video id="webcam" autoplay playsinline muted></video>
+            <div class="overlay">
+                <div class="overlay-dot"></div>
+                Live Drone Feed
+            </div>
+            <div id="scanLine" class="scan-line"></div>
+        </div>
+        
+        <div class="api-input-container">
+            <input type="password" id="geminiKey" class="api-key-input" placeholder="Enter Gemini API Key here...">
+        </div>
+
+        <div class="camera-controls">
+            <button id="btnStartCam" class="btn-primary" onclick="initCamera()">Start Camera</button>
+            <button id="btnAnalyze" class="btn-primary" onclick="analyzeFrame()" disabled>Capture & Analyze</button>
+            <input type="file" id="fileUpload" accept="image/*" style="display: none;" onchange="handleFileUpload(this)">
+            <button class="btn-primary" style="background: #334155; box-shadow:none;" onclick="document.getElementById('fileUpload').click()">Upload Image</button>
+        </div>
+    </div>
+
+    <!-- Analysis Panel -->
+    <div class="analysis-section">
+        <!-- Logs -->
+        <div class="card">
+            <div class="result-header">System Logs</div>
+            <div id="logTerminal" class="log-terminal">
+                <div class="log-entry log-info">> System initialized.</div>
+                <div class="log-entry">> Waiting for camera feed...</div>
+            </div>
+        </div>
+
+        <!-- Final Results -->
+        <div class="card result-card">
+            <div class="result-header">Analysis Result</div>
+            
+            <div class="disease-detail">
+                <div class="disease-label">Detected Disease</div>
+                <div id="resDisease" class="disease-value">--</div>
+            </div>
+
+            <div class="disease-detail">
+                <div class="disease-label">Severity Stage</div>
+                <div id="resStage" class="disease-value">--</div>
+            </div>
+
+            <div class="disease-detail">
+                <div class="disease-label">Confidence</div>
+                <div id="resConfidence" class="disease-value">--</div>
+            </div>
+
+            <div class="disease-label" style="margin-bottom: 5px;">Recommended Solution</div>
+            <div id="resSolution" class="solution-box">
+                Waiting for analysis...
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Logic Script -->
+<script type="module" src="js/disease_detector.js"></script>
+
+</body>
+</html>
